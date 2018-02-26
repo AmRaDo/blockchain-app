@@ -13,6 +13,7 @@ function getTree(data) {
     var temp = map[id];
     if (temp) {
       obj.name = temp.name;
+      obj.details = temp.details;
       obj.children = [];
       temp.children.forEach(item => {
         var tempObj = {};
@@ -74,7 +75,7 @@ function update(source) {
 
   nodeEnter.append("circle")
     .attr("r", 1e-6)
-    .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+    .style("fill", function (d) { return (d._children && d._children.left > 0) ? "lightsteelblue" : "#fff"; });
 
   nodeEnter.append("text")
     .attr("x", function (d) { return d.children || d._children ? -10 : 10; })
@@ -82,6 +83,9 @@ function update(source) {
     .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
     .text(function (d) { return d.name; })
     .style("fill-opacity", 1e-6);
+
+  nodeEnter.append("svg:title")
+  .text(function(d) { return d.details;});
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()

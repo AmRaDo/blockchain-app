@@ -20,7 +20,7 @@ window.App = {
     var name = document.getElementById("name").value;
     var children = this.getSelectValues(document.getElementById("compoments"));
     console.log(children);
-    var details = document.getElementById("details").value;
+    var details = "BatchId: XX-000-067\nstorageDetails :\n    temp : 10C,\n    humidity: 25%";
     deployede2TrackIt.addNewPart(partId, name, children, details, function (error) {
       console.log(error);
       alert(error);
@@ -42,19 +42,19 @@ window.App = {
   },
   displayAll: function () {
     var contractAddress = document.getElementById("contractAddress").value;
+    localStorage.setItem("contractAddr", contractAddress);
     var deployede2TrackIt = e2TrackItContract.at(contractAddress);
 
     deployede2TrackIt.getAll.call(function (error, allParts) {
       for (let i = 0; i < allParts.length; i++) {
         if (allParts[i] != 0) {
           deployede2TrackIt.getPart.call(allParts[i], function (error, partInfo) {
-            localStorage.setItem("errr", error);
-            localStorage.setItem("data", partInfo);
-            var children = partInfo[2];
+            localStorage.setItem("errr" + i, error);
+            localStorage.setItem("data" + i, partInfo);
             var locationInfo = {
               name: partInfo[0],
               id: partInfo[1],
-              children: children,
+              children: partInfo[2],
               details: partInfo[3]
             };
             allLocationData.push(locationInfo);
