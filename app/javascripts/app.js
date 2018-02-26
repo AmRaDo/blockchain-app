@@ -16,48 +16,52 @@ window.App = {
     var contractAddress = document.getElementById("contractAddress").value;
     localStorage.setItem("contractAddr", contractAddress);
     var deployede2TrackIt = e2TrackItContract.at(contractAddress);
-    var locationId = document.getElementById("locationId").value;
-    var locationName = document.getElementById("locationName").value;
-    var prevLocationid = document.getElementById("prevLocationId").value;
+    var partId = document.getElementById("partId").value;
+    var name = document.getElementById("name").value;
+    var children = this.getSelectValues(document.getElementById("compoments"));
+    console.log(children);
     var details = document.getElementById("details").value;
-    deployede2TrackIt.addNewLocation(locationId, prevLocationid, locationName, details, function (error) {
+    deployede2TrackIt.addNewPart(partId, name, children, details, function (error) {
       console.log(error);
       alert(error);
     })
   },
-  getCurrentLocation: function () {
-    web3.eth.getAccounts(function (err, accs) {
-      if (err != null) {
-        alert("There was an error fetching your accounts.");
-        return;
+  getSelectValues: function (select) {
+    var result = [];
+    var options = select && select.options;
+    var opt;
+
+    for (var i = 0, iLen = options.length; i < iLen; i++) {
+      opt = options[i];
+
+      if (opt.selected) {
+        result.push(parseInt(opt.value));
       }
-      if (accs.length == 0) {
-        alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
-        return;
-      }
-      accounts = accs;
-      account = accounts[0];
-      document.getElementById("locationId").value = account;
-    });
+    }
+    return result;
   },
   displayAll: function () {
     var contractAddress = document.getElementById("contractAddress").value;
     var deployede2TrackIt = e2TrackItContract.at(contractAddress);
-    deployede2TrackIt.getAll.call(function (error, addrList) {
-      localStorage.setItem("errr", error);
-      localStorage.setItem("data", addrList);
-      for (let i = 0; i < addrList.length; i++) {
-        deployede2TrackIt.getLocation.call(addrList[i], function (error, locationData) {
-          var locationInfo = {
-            name: locationData[0],
-            locationId: locationData[1],
-            previousLocationId: locationData[2],
-            timestamp: locationData[3],
-            details: locationData[4]
-          };
-          allLocationData.push(locationInfo);
-          localStorage.setItem("test", JSON.stringify(allLocationData));
-        });
+
+    deployede2TrackIt.getAll.call(function (error, allParts) {
+      for (let i = 0; i < allParts.length; i++) {
+        if (allParts[i] != 0) {
+          deployede2TrackIt.getPart.call(allParts[i], function (error, partInfo) {
+            localStorage.setItem("errr", error);
+            localStorage.setItem("data", partInfo);
+            var children = partInfo[2];
+            var locationInfo = {
+              name: partInfo[0],
+              id: partInfo[1],
+              children: children,
+              details: partInfo[3]
+            };
+            allLocationData.push(locationInfo);
+            localStorage.setItem("test", JSON.stringify(allLocationData));
+
+          });
+        }
       }
     });
   },
@@ -72,17 +76,15 @@ window.App = {
         alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
         return;
       }
-
       accounts = accs;
       account = accounts[0];
       web3.eth.defaultAccount = account;
-      e2TrackitABI =  [{"constant": true,"inputs": [],"name": "getAll","outputs": [{"name": "","type": "address[]"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "uint256"}],"name": "locationList","outputs": [{"name": "","type": "address"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "locationId","type": "address"},{"name": "prevLocationId","type": "address"},{"name": "name","type": "string"},{"name": "details","type": "string"}],"name": "addNewLocation","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "locationId","type": "address"}],"name": "getLocation","outputs": [{"name": "","type": "string"},{"name": "","type": "address"},{"name": "","type": "address"},{"name": "","type": "uint256"},{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "","type": "address"}],"name": "trail","outputs": [{"name": "name","type": "string"},{"name": "locationId","type": "address"},{"name": "previousLocationId","type": "address"},{"name": "timestamp","type": "uint256"},{"name": "details","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}];
+      e2TrackitABI = [{"constant": true,"inputs": [{"name": "","type": "uint8"}],"name": "trail","outputs": [{"name": "name","type": "string"},{"name": "id","type": "uint8"},{"name": "details","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "partId","type": "uint256"}],"name": "remove","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "getAll","outputs": [{"name": "","type": "uint8[]"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "partId","type": "uint8"},{"name": "name","type": "string"},{"name": "children","type": "uint8[4]"},{"name": "details","type": "string"}],"name": "addNewPart","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "","type": "uint256"}],"name": "partList","outputs": [{"name": "","type": "uint8"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": true,"inputs": [{"name": "partId","type": "uint8"}],"name": "getPart","outputs": [{"name": "","type": "string"},{"name": "","type": "uint8"},{"name": "","type": "uint8[4]"},{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}];
       e2TrackItContract = web3.eth.contract(e2TrackitABI);
-      document.getElementById("locationId").value = account;
       document.getElementById("contractAddress").value = localStorage.getItem("contractAddr");
       App.displayAll();
     });
-    
+
   }
 };
 window.addEventListener('load', function () {

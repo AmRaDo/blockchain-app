@@ -1,27 +1,30 @@
 
 import * as d3 from 'd3';
 
-function getFormattedData(arr) {
-  var obj = arr[0];
-  obj.children = [];
-  processTree(arr, obj, 1, obj.locationId);
+function getTree(data) {
+  var map = {};
+  data.forEach(item => {
+    map[item.id] = item;
+  });
+  var obj = {};
+  obj = getFormattedData(1, obj);
   return obj;
-}
-function processTree(arr, parentObj, startIndex, parentId) {
-  for (var i = startIndex; i < arr.length; i++) {
-    var childObj = arr[i];
-    if (childObj.previousLocationId === parentId) {
-      if (!parentObj.children) {
-        parentObj.children = [];
-      }
-      parentObj.children.push(childObj);
-    } else {
-      var childrens = parentObj.children;
-      i = processTree(arr, childrens[childrens.length - 1], i, arr[i - 1].locationId);
-      return i;
+  function getFormattedData(id, obj) {
+    var temp = map[id];
+    if (temp) {
+      obj.name = temp.name;
+      obj.children = [];
+      temp.children.forEach(item => {
+        var tempObj = {};
+        getFormattedData(item, tempObj);
+        if (Object.keys(tempObj).length !== 0) {
+          obj.children.push(tempObj);
+        }
+
+      });
     }
+    return obj;
   }
-  return i;
 }
 
 
@@ -155,11 +158,12 @@ var locationData = JSON.parse(localStorage.getItem("test"));
 
 var flare = {
   "name": "Root",
-  "children": [] }
-if(locationData === null){
+  "children": []
+}
+if (locationData === null) {
   root = flare;
-}else {
-  root = getFormattedData(locationData);
+} else {
+  root = getTree(locationData);
 
 }
 root.x0 = height / 2;
