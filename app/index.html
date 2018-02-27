@@ -7,7 +7,7 @@
 
 <body>
     <div>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-5">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
             <img src="logo.svg" width="15%" height="70px">
             <a href="#!/" class="navbar-brand"> .</a>
             <button type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"
@@ -28,20 +28,20 @@
         <h1>E2TraceIt</h1>
         <form>
             <div class="form-group col-md-6">
-                <label for="contractAddress">Batch No.:</label>
-                <input type="text" class="form-control" id="contractAddress" placeholder="Enter batch no."></input>
+                <label for="contractAddress" class="badge  badge-pill-lg badge-secondary">Batch No.</label>
+                <input type="text" class="form-control" id="contractAddress" placeholder="Enter batch no." value="0x345ca3e014aaf5dca488057592ee47305d9b3e10"></input>
             </div>
             <div class="form-group col-md-6">
-                <label for="partId">Part Id:</label>
-                <input type="text" class="form-control" id="partId" placeholder="Enter the Part Id"></input>
+                <label for="partId" class="badge  badge-pill-lg badge-secondary">Part Id</label>
+                <input type="text" class="form-control" id="partId" placeholder="Enter the Part Id" value="6"></input>
             </div>
 
             <div class="form-group col-md-6">
-                <label for="locationName"> Part Name:</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter Part Name"></input>
+                <label for="locationName" class="badge  badge-pill-lg badge-secondary">Part Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter Part Name" value="PROCESSOR_1"></input>
             </div>
             <div class="form-group col-md-6">
-                <label for="compoents"> Required components:</label>
+                <label for="compoents"class="badge badge-pill-lg badge-secondary w-25">Required components</label>
                 <select id="compoments" class="form-control" multiple>
                     <option value="1">Laptop type 1</option>
                     <option value="2">Solid State Drive 500GB</option>
@@ -53,12 +53,12 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary" id="addNewLocation" onclick="App.addNewLocation()">Add Location Entry</button>
-            <button class="btn btn-primary" id="getData" onclick="App.displayAll()">Get Location Data</button>
+            <button class="btn btn-primary mx-3" id="addNewLocation" onclick="App.addNewLocation()">Add Entry</button>
+            <button class="btn btn-primary " id="getData" onclick="App.displayAll()">Get Data</button>
         </form>
     </div>
     <div class="graph-data">
-        <label for="bomDetails">BoM Details:</label>
+        <h4 class="border border-dark rounded bg-dark text-white">BoM Details</h4>
         <div id="svgData"></div>
     </div>
     <script src="./app.js"></script>
