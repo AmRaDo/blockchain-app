@@ -13,7 +13,7 @@ contract E2TrackIt {
 
     function E2TrackIt() public {
         Part memory newPart1;
-        newPart1.name = "Laptop_1";
+        newPart1.name = "LAPTOP_1";
         newPart1.id = 1;
         newPart1.details = "";
         newPart1.children = [2, 3, 4, 5];
